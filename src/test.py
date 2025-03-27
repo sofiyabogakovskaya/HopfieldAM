@@ -1,0 +1,10 @@
+# Evaluation script
+import jax.numpy as jnp
+from utils.metrics import accuracy
+
+
+def test(model, test_loader, dt, N_steps, N_classes):
+    """Runs the final evaluation on the test dataset."""
+    acc = accuracy(model, test_loader, dt, N_steps, N_classes)
+    print(f"Test Accuracy: {acc:.2%}")
+    return acc

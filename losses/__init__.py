@@ -1,9 +1,8 @@
-from .loss1 import loss1
-from .loss2 import loss2
+from .loss_last10 import batch_loss_last10
 
-def get_loss(name):
+
+def get_batch_loss(name):
     losses = {
-        "loss1": loss1,
-        "loss2": loss2,
+        "batch_loss_last10": batch_loss_last10
     }
-    return losses.get(name, loss1)  # Default to loss1
+    return losses.get(name, batch_loss_last10)  

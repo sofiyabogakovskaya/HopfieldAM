@@ -1,9 +1,16 @@
-from .model1 import Model1
-from .model2 import Model2
+from .Hopfield import Hopfield
 
-def get_model(name):
-    models = {
-        "model1": Model1(),
-        "model2": Model2(),
-    }
-    return models.get(name, Model1())  # Default to Model1
+def get_model(model_name, key, **kwargs):
+    """Factory function to initialize models with custom parameters."""
+    if model_name == "Hopfield":
+        return Hopfield(key=key, **kwargs)  
+    else:
+        raise ValueError(f"Unknown model: {model_name}")
+    
+
+# def get_model(name):
+#     models = {
+#         "Hopfield": Hopfield()
+#         # "model2": Model2(),
+#     }
+#     return models.get(na    me, Hopfield()) 
