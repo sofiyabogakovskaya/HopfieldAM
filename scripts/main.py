@@ -46,11 +46,12 @@ def main():
     # Save model
     # eqx.tree_serialise_leaves("models/trained_model.eqx", trained_model)
 
-    test(model, test_loader, args.dt, args.N_steps, args.N_classes)
+    # test(model, test_loader, args.dt, args.N_steps, args.N_classes)
+    print("finish")
 
 
 if __name__ == "__main__":
-    print("HERE!!!")
+    print("omg hi!!!")
     main()
 
 # This setup allows you to switch models and loss functions easily by running:
