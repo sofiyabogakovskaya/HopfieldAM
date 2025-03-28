@@ -1,6 +1,6 @@
 CONFIG = {
     "epochs": 10,
-    "batch_size": 8,
+    "batch_size": 128,
     "learning_rate": 1e-3,
     "dt":1e-2,
     "N_steps":100,
