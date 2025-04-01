@@ -2,7 +2,7 @@ import json
 import os
 import matplotlib.pyplot as plt
 
-def plot_metrics(filename="logs/results.json"):
+def plot_metrics(filename="logs/metrics.json"):
     """Plots training loss and validation accuracy from the log file."""
     if not os.path.exists(filename):
         print(f"Error: {filename} not found. Run training first!")
@@ -13,9 +13,16 @@ def plot_metrics(filename="logs/results.json"):
         metrics = json.load(f)
 
     # Extract loss and accuracy
-    epochs = sorted(int(k) for k in metrics.keys())  # Convert keys to integers for sorting
-    train_loss = [metrics[str(epoch)]["train_loss"] for epoch in epochs]
-    val_acc = [metrics[str(epoch)]["val_accuracy"] for epoch in epochs]
+    epochs = [entry["epoch"] for entry in metrics if "epoch" in entry]
+    train_loss = [entry["loss"] for entry in metrics if "loss" in entry]
+    val_acc = [entry["val_accuracy"] for entry in metrics if "val_accuracy" in entry]
+    # epochs = sorted(int(k) for k in metrics.keys())  # Convert keys to integers for sorting
+    # train_loss = [metrics[str(epoch)]["train_loss"] for epoch in epochs]
+    # val_acc = [metrics[str(epoch)]["val_accuracy"] for epoch in epochs]
+
+    if not epochs or not train_loss or not val_acc:
+        print("Error: Metrics file does not contain valid training data.")
+        return
 
     # Create the figure
     fig, ax1 = plt.subplots()
