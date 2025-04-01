@@ -14,7 +14,7 @@ def accuracy(model, x, y, dt, N_steps, N_classes):
 
 def batch_accuracy(model, val_loader, dt, N_steps, N_classes):
     correct, total = 0, 0
-    for x_batch, y_batch in tqdm(val_loader(), desc="evaluating accuracy..."):
+    for x_batch, y_batch in val_loader():
          acc = jnp.mean(
              vmap(accuracy, in_axes=(None, 0, 0, None, None, None))(model, x_batch, y_batch, dt, N_steps, N_classes)
              )
