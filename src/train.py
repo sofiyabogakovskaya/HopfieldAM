@@ -17,7 +17,7 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, N_steps, N_classes
     return model, opt_state, loss
 
 def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, N_steps, N_classes):
-
+    
     for epoch in tqdm(range(epochs), desc="epoch training..."):
         total_loss = 0.0
         num_batches = 0
@@ -29,8 +29,8 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
 
         val_acc = batch_accuracy(model, val_loader, dt, N_steps, N_classes)   
 
-        print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
-        # log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
-        # log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
+        # print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+        log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+        log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
 
     return model

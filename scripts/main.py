@@ -10,6 +10,8 @@ from losses import get_batch_loss
 from datasets.dataset_loader import get_dataloader
 from src.train import train
 from src.test import test
+from utils.visualization import plot_metrics, plot_energy
+from utils.integrate_trajectory import get_energy
 
 
 def main():
@@ -37,10 +39,17 @@ def main():
 
     trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.N_steps, args.N_classes)
 
-    # save model
-    # eqx.tree_serialise_leaves("models/trained_model.eqx", trained_model)
+    test(trained_model, test_loader, args.dt, args.N_steps, args.N_classes)
 
-    test(model, test_loader, args.dt, args.N_steps, args.N_classes)
+    # save model
+    # base_path = "models/"
+    # eqx.tree_serialise_leaves(base_path  + "_model.eqx", trained_model)
+
+    plot_metrics()
+    # or in bash python utils/visualize.py
+
+    # E = get_energy(model, data_batches, args.dt, args.N_steps, args.ts)
+    # plot_energy(E)
 
     print("finish")
 

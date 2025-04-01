@@ -1,8 +1,8 @@
 import jax.numpy as jnp
-from utils.metrics import accuracy
+from utils.metrics import batch_accuracy
 
 def test(model, test_loader, dt, N_steps, N_classes):
     """Runs the final evaluation on the test dataset."""
-    acc = accuracy(model, test_loader, dt, N_steps, N_classes)
+    acc = batch_accuracy(model, test_loader, dt, N_steps, N_classes)
     print(f"Test Accuracy: {acc:.2%}")
     return acc
