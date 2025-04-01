@@ -20,5 +20,4 @@ def batch_accuracy(model, val_loader, dt, N_steps, N_classes):
              )
          correct += jnp.sum(acc)
          total += len(y_batch)
-    return correct / total
-
+    return correct / total  
