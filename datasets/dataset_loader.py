@@ -17,15 +17,12 @@ def get_dataloader(dataset_name="mnist", batch_size=32, val_ratio=0.1, test_rati
     X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=val_ratio/(1 - test_ratio), 
                                                        random_state=random_seed, stratify=y_train)
 
-    print(X_train.shape)
-    print(X_val.shape)
-
-    # Function to yield batches
+    # function to yield batches
     def dataloader(X, y, batch_size):
         """Yields batches of (X, y) from the dataset."""
         n_samples = len(X)
         indices = np.arange(n_samples)
-        np.random.shuffle(indices)  # Shuffle dataset each epoch
+        np.random.shuffle(indices)  # shuffle dataset each epoch
         for i in range(0, n_samples, batch_size):
             batch_idx = indices[i : i + batch_size]
             yield X[batch_idx], y[batch_idx]
