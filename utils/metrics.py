@@ -13,11 +13,12 @@ def accuracy(model, x, y, dt, N_steps, N_classes):
     return jnp.argmax(log_proba) == y
 
 def batch_accuracy(model, val_loader, dt, N_steps, N_classes):
-    correct, total = 0, 0
+    total_accuracy = 0.0
+    num_batches = 0
     for x_batch, y_batch in val_loader():
-         acc = jnp.mean(
+         batch_acc = jnp.mean(
              vmap(accuracy, in_axes=(None, 0, 0, None, None, None))(model, x_batch, y_batch, dt, N_steps, N_classes)
              )
-         correct += jnp.sum(acc)
-         total += len(y_batch)
-    return correct / total  
+         total_accuracy += batch_acc
+         num_batches += 1
+    return total_accuracy / num_batches  
