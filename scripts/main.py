@@ -3,6 +3,7 @@ import optax
 import argparse
 
 import jax.random as random
+from jax import vmap
 
 from config import CONFIG
 from models import get_model
@@ -11,7 +12,7 @@ from datasets.dataset_loader import get_dataloader
 from src.train import train
 from src.test import test
 from utils.visualization import plot_metrics, plot_energy
-from utils.integrate_trajectory import get_energy
+from utils.integrate_trajectory import integrate_trajectory
 
 
 def main():
@@ -47,9 +48,10 @@ def main():
 
     plot_metrics()
     # or in bash python utils/visualize.py
-
-    # E = get_energy(model, data_batches, args.dt, args.N_steps, args.ts)
-    # plot_energy(E)
+    
+    # pythontrajectory = integrate_trajectory(model, x, args.dt, args.t1, args.ts)
+    # energy = vmap(energy)(model.energy)(x)
+    # plot_energy(energy)
 
     print("finish")
 

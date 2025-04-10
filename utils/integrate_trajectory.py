@@ -14,9 +14,3 @@ def integrate_trajectory(model, x, dt, t1, ts):
         args=None
     ).ys
     return x
-
-def get_energy(model, data_batches, dt, t1, ts):
-    # TODO: fix data_batches thing, we only have a dataloader
-    batch_trajectory = vmap(integrate_trajectory, in_axes=(None, 0, None, None, None))(model, data_batches[0][0], dt, t1, ts)
-    E = vmap(vmap(model.energy))(batch_trajectory)
-    return E
