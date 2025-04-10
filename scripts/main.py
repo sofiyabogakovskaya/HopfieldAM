@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--epochs", type=int, default=CONFIG["epochs"], help="Number of training epochs")
     parser.add_argument("--batch_size", type=int, default=CONFIG["batch_size"], help="Batch size")
     parser.add_argument("--dt", type=int, default=CONFIG["dt"], help="dt")
-    parser.add_argument("--N_steps", type=int, default=CONFIG["N_steps"], help="N steps")
+    parser.add_argument("--t1", type=int, default=CONFIG["t1"], help="t1")
     parser.add_argument("--N_classes", type=int, default=CONFIG["N_classes"], help="N classes")
     args = parser.parse_args()
 
@@ -37,9 +37,9 @@ def main():
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
 
-    trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.N_steps, args.N_classes)
+    trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.t1, args.N_classes)
 
-    test(trained_model, test_loader, args.dt, args.N_steps, args.N_classes)
+    test(trained_model, test_loader, args.dt, args.t1, args.N_classes)
 
     # save model
     # base_path = "models/"

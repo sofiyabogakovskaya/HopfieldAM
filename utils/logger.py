@@ -12,11 +12,6 @@ def log_message(message):
         f.write(message + "\n")
 
 
-# def clear_first(filename="logs/metrics.json", clear=True):
-#     if clear and os.path.exists(filename):
-#         os.remove(filename)
-
-
 def log_metrics(metrics, filename="logs/metrics.json"):
     """Saves metrics like accuracy, loss, etc., in a JSON file.""" 
 
@@ -35,7 +30,7 @@ def log_metrics(metrics, filename="logs/metrics.json"):
         json.dump(data, f, indent=4)
 
 def clear_logs():
-    """Deletes both logs/metrics.json and logs/training.log before training."""
+    """deletes logs/metrics.json and logs/training.log before training."""
     os.makedirs("logs", exist_ok=True)
 
     if os.path.exists(METRICS_FILE):
