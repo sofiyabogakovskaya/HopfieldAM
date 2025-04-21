@@ -13,9 +13,11 @@ from src.train import train
 from src.test import test
 from utils.visualization import plot_metrics, plot_energy
 from utils.integrate_trajectory import integrate_trajectory
+from utils.logger import new_run_id, log_experiment
 
 
 def main():
+    run_id = new_run_id()
     # argument parser for dynamic selection
     parser = argparse.ArgumentParser(description="Hopfield Associative Memory Training")
     parser.add_argument("--model", type=str, default="Hopfield", help="Model architecture")
@@ -40,8 +42,12 @@ def main():
 
     trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.t1, args.N_classes)
 
-    test(trained_model, test_loader, args.dt, args.t1, args.N_classes)
+    metrics = test(trained_model, test_loader, args.dt, args.t1, args.N_classes)
 
+    run_id = "001"
+    log_experiment(run_id, model, opt_state, CONFIG, {
+                "metrics": metrics
+            })
     # save model
     # base_path = "models/"
     # eqx.tree_serialise_leaves(base_path  + "_model.eqx", trained_model)

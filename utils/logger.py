@@ -1,6 +1,11 @@
 import json
 import os
 
+import equinox as eqx
+
+from datetime import datetime
+
+
 LOG_DIR = "logs"
 METRICS_FILE = os.path.join(LOG_DIR, "metrics.json")
 TRAINING_LOG = os.path.join(LOG_DIR, "training.log")
@@ -40,6 +45,24 @@ def clear_logs():
     if os.path.exists(TRAINING_LOG):
         os.remove(TRAINING_LOG)
         print(f"Cleared: {TRAINING_LOG}")
+
+
+def new_run_id(prefix="run"):
+    return f"{prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+
+def log_experiment(run_id, model, opt_state, config, metrics):
+    os.makedirs(f"experiments/{run_id}", exist_ok=True)
+    
+    with open(f"experiments/{run_id}/config.json", "w") as f:
+        json.dump(config, f, indent=2)
+    
+    with open(f"experiments/{run_id}/metrics.json", "w") as f:
+        json.dump(metrics, f, indent=2)
+
+    eqx.tree_serialise_leaves(f"experiments/{run_id}/model.eqx", model)
+    eqx.tree_serialise_leaves(f"experiments/{run_id}/opt_state.eqx", opt_state)
+
 
 if __name__ == "__main__":
     clear_logs() 

@@ -6,7 +6,9 @@ from jax import grad, random, config, vmap, jit
 
 from tqdm import tqdm
 
+from config import CONFIG
 from utils.logger import log_message, log_metrics, clear_logs
+from utils.logger import log_experiment, new_run_id
 from utils.metrics import batch_accuracy
 
 @eqx.filter_jit
@@ -18,7 +20,8 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, t1, N_classes):
 
 def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, t1, N_classes):
     clear_logs()
-    
+    train_losses = []
+    train_accuracies = []
     for epoch in tqdm(range(epochs), desc="epoch training..."):
         total_loss = 0.0
         num_batches = 0
@@ -27,11 +30,18 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
             total_loss += loss_value
             num_batches += 1   
         avg_loss = total_loss / num_batches
-    
-        val_acc = batch_accuracy(model, val_loader, dt, t1, N_classes)   
+        val_acc = batch_accuracy(model, val_loader, dt, t1, N_classes)  
 
-        # print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+        train_losses.append(avg_loss)
+        train_accuracies.append(val_acc) 
+
         log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
         log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
+    
+    run_id = "001"
+    log_experiment(run_id, model, opt_state, CONFIG, {
+                "train_loss": train_losses,
+                "train_accuracy": train_accuracies
+            })
 
     return model
