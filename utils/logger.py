@@ -1,6 +1,8 @@
 import json
 import os
 
+import pandas as pd
+
 import equinox as eqx
 
 from datetime import datetime
@@ -57,8 +59,10 @@ def log_experiment(run_id, model, opt_state, config, metrics):
     with open(f"experiments/{run_id}/config.json", "w") as f:
         json.dump(config, f, indent=2)
     
-    with open(f"experiments/{run_id}/metrics.json", "w") as f:
-        json.dump(metrics, f, indent=2)
+    # with open(f"experiments/{run_id}/metrics.json", "w") as f:
+    #     json.dump(metrics, f, indent=2)
+    df_metrics = pd.DataFrame(metrics)
+    df_metrics.to_json(f"experiments/{run_id}/metrics.json")
 
     eqx.tree_serialise_leaves(f"experiments/{run_id}/model.eqx", model)
     eqx.tree_serialise_leaves(f"experiments/{run_id}/opt_state.eqx", opt_state)
