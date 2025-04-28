@@ -39,20 +39,18 @@ def main():
     optimizer = optax.adam(learning_rate=CONFIG["learning_rate"])
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
-    metrics = "testing"
+
+
+    trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.t1, args.N_classes)
+
+    metrics = test(trained_model, test_loader, args.dt, args.t1, args.N_classes)
+
     run_id = "001"
     log_experiment(run_id, model, opt_state, CONFIG, {
                 "metrics": metrics
             })
-
-    # trained_model = train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.t1, args.N_classes)
-
-    # metrics = test(trained_model, test_loader, args.dt, args.t1, args.N_classes)
-
-    # run_id = "001"
-    # log_experiment(run_id, model, opt_state, CONFIG, {
-    #             "metrics": metrics
-    #         })
+    
+    
     # save model
     # base_path = "models/"
     # eqx.tree_serialise_leaves(base_path  + "_model.eqx", trained_model)
