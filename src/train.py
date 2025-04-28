@@ -19,7 +19,7 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, t1, N_classes):
     return model, opt_state, loss
 
 def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, t1, N_classes):
-    # clear_logs()
+    clear_logs()
     run_id = new_run_id()
     train_losses = []
     train_accuracies = []
