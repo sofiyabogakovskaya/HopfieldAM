@@ -42,6 +42,7 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
     print(train_losses)
     print(train_accuracies)
     print(type(train_losses))
+    print(type(train_losses[-1]))
     
     log_experiment(run_id, model, opt_state, CONFIG, {
                 "train_loss": train_losses,
