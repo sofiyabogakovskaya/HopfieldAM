@@ -33,8 +33,8 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
         avg_loss = total_loss / num_batches
         val_acc = batch_accuracy(model, val_loader, dt, t1, N_classes)  
 
-        train_losses.append(avg_loss)
-        train_accuracies.append(val_acc) 
+        train_losses.append(float(avg_loss))
+        train_accuracies.append(float(val_acc)) 
 
         log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
         log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
