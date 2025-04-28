@@ -58,7 +58,7 @@ def log_experiment(run_id, model, opt_state, config, metrics: dict):
     
     with open(f"experiments/{run_id}/config.json", "w") as f:
         json.dump(config, f, indent=2)
-    
+            
     # with open(f"experiments/{run_id}/metrics.json", "w") as f:
     #     json.dump(metrics, f, indent=2)
     df_metrics = pd.DataFrame(metrics, index=[0])
