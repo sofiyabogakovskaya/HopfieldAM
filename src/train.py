@@ -38,7 +38,8 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
         log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
         log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
     
-    run_id = "001"
+    print(train_losses)
+    print(train_accuracies)
     log_experiment(run_id, model, opt_state, CONFIG, {
                 "train_loss": train_losses,
                 "train_accuracy": train_accuracies
