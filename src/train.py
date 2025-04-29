@@ -18,11 +18,10 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, t1, N_classes):
     model = eqx.apply_updates(model, updates)
     return model, opt_state, loss
 
-def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, t1, N_classes):
+def train(run_id, model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, t1, N_classes):
     clear_logs()
-    run_id = new_run_id()
-    train_losses = []
-    train_accuracies = []
+    val_losses = []
+    val_accuracies = []
     for epoch in tqdm(range(epochs), desc="epoch training..."):
         total_loss = 0.0
         num_batches = 0
@@ -33,20 +32,15 @@ def train(model, train_loader, val_loader, batch_loss, optimizer, opt_state, epo
         avg_loss = total_loss / num_batches
         val_acc = batch_accuracy(model, val_loader, dt, t1, N_classes)  
 
-        train_losses.append(float(avg_loss))
-        train_accuracies.append(float(val_acc)) 
+        val_losses.append(float(avg_loss))
+        val_accuracies.append(float(val_acc)) 
 
         log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
         log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
     
-    print(train_losses)
-    print(train_accuracies)
-    print(type(train_losses))
-    print(type(train_losses[-1]))
-    
     log_experiment(run_id, model, opt_state, CONFIG, {
-                "train_loss": train_losses,
-                "train_accuracy": train_accuracies
+                "val_loss": val_losses,
+                "val_accuracy": val_accuracies
             })
 
     return model
