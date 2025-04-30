@@ -13,7 +13,7 @@ from src.train import train
 from src.test import test
 from utils.visualization import plot_metrics, plot_energy
 from utils.integrate_trajectory import integrate_trajectory
-from utils.logger import new_run_id, log_experiment
+from utils.logger import new_run_id, log_experiment, log_summary
 from utils.parse_config import parse_config
 
 
@@ -44,29 +44,38 @@ def main():
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
     # training x testing x log
-    trained_model = train(run_id=run_id,
-                          model=model, 
-                          train_loader=train_loader, 
-                          val_loader=val_loader,
-                          batch_loss=batch_loss, 
-                          optimizer=optimizer, 
-                          opt_state=opt_state, 
-                          epochs=args.epochs, 
-                          dt=args.dt, 
-                          t1=args.t1, 
-                          N_classes=args.N_classes)
+    trained_model, val_losses, val_accuracies = train(
+        model=model,                                               
+        train_loader=train_loader, 
+        val_loader=val_loader,
+        batch_loss=batch_loss, 
+        optimizer=optimizer, 
+        opt_state=opt_state, 
+        epochs=args.epochs, 
+        dt=args.dt, 
+        t1=args.t1, 
+        N_classes=args.N_classes
+        )
     
-    test_accuracy = test(run_id=run_id, 
-                         model=trained_model, 
-                         test_lodaer=test_loader, 
-                         dt=args.dt, 
-                         t1=args.t1, 
-                         N_classes=args.N_classes)
-
-    log_experiment(run_id, model, opt_state, CONFIG, {
-                "test_accuracy": test_accuracy
-            })
-
+    test_accuracy = test(
+        run_id=run_id, 
+        model=trained_model, 
+        test_lodaer=test_loader,
+        dt=args.dt, 
+        t1=args.t1, 
+        N_classes=args.N_classes
+        )
+    
+    test_loss = -1
+    metrics = {
+        "val_losses": val_losses,
+        "val_accuracies": val_accuracies,
+        "test_loss": test_loss, 
+        "test_accuracy": test_accuracy
+        }
+    
+    log_experiment(run_id, model, opt_state, CONFIG, metrics)
+    log_summary(run_id, CONFIG, metrics)
 
     plot_metrics()
     # or in bash python utils/visualize.py

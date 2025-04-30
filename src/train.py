@@ -18,8 +18,7 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, t1, N_classes):
     model = eqx.apply_updates(model, updates)
     return model, opt_state, loss
 
-def train(run_id, 
-          model, 
+def train(model, 
           train_loader, 
           val_loader, 
           batch_loss, 
@@ -29,28 +28,36 @@ def train(run_id,
           dt, 
           t1, 
           N_classes):
-    clear_logs()
+    
+    # clear_logs()
+
     val_losses = []
     val_accuracies = []
     for epoch in tqdm(range(epochs), desc="epoch training..."):
         total_loss = 0.0
         num_batches = 0
         for x_batch, y_batch in train_loader():
-            model, opt_state, loss_value = update(model, x_batch, y_batch, batch_loss, opt_state, optimizer, dt, t1, N_classes)
+            model, opt_state, loss_value = update(model=model, 
+                                                  x=x_batch, 
+                                                  y=y_batch, 
+                                                  batch_loss=batch_loss, 
+                                                  opt_state=opt_state, 
+                                                  optimizer=optimizer, 
+                                                  dt=dt, 
+                                                  t1=t1, 
+                                                  N_classes=N_classes
+                                                  )
             total_loss += loss_value
             num_batches += 1   
         avg_loss = total_loss / num_batches
         val_acc = batch_accuracy(model, val_loader, dt, t1, N_classes)  
 
+        print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+
         val_losses.append(float(avg_loss))
         val_accuracies.append(float(val_acc)) 
 
-        log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
-        log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
-    
-    log_experiment(run_id, model, opt_state, CONFIG, {
-                "val_loss": val_losses,
-                "val_accuracy": val_accuracies
-            })
-
-    return model
+        # log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+        # log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
+ 
+    return model, val_losses, val_accuracies
