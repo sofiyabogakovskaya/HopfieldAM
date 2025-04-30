@@ -20,21 +20,6 @@ def log_experiment(run_id, model, opt_state, config: dict, metrics: dict):
 
     with open(f"experiments/{run_id}/metrics.json", "w") as f:
         json.dump(metrics, f, indent=2)
-            
-    # df_metrics = pd.DataFrame(metrics, index=[0])
-    # df_metrics.to_json(f"experiments/{run_id}/metrics.json", index=False)
-
-    # scalar_metrics = {k: v for k, v in metrics.items() if not isinstance(v, (list, tuple))}
-    # list_metrics = {k: v for k, v in metrics.items() if isinstance(v, (list, tuple))}
-
-    # # Save scalar metrics
-    # with open(f"experiments/{run_id}/final_metrics.json", "w") as f:
-    #     json.dump(scalar_metrics, f, indent=2)
-
-    # # Save list metrics
-    # if list_metrics:
-    #     df = pd.DataFrame(list_metrics)
-    #     df.to_csv(f"experiments/{run_id}/metrics.csv", index=False)
 
     eqx.tree_serialise_leaves(f"experiments/{run_id}/model.eqx", model)
     eqx.tree_serialise_leaves(f"experiments/{run_id}/opt_state.eqx", opt_state)
@@ -51,7 +36,7 @@ def log_summary(run_id, config: dict, metrics: dict, log_path="experiments/resul
     acc = metrics.get("test_accuracy", 0) * 100  
 
     line1 = f"{run_id} | loss: {loss:.4f} | acc: {acc:.1f}% | epochs: {epochs} | "
-    line2 = f"batch size: {batch_size} | lr: {lr} | dt: {dt} | t1: {t1} | N classes: {N_classes}\n"
+    line2 = f"batch_size: {batch_size} | lr: {lr} | dt: {dt} | t1: {t1} | N_classes: {N_classes}\n"
     summary_line = line1 + line2
  
     with open(log_path, "a") as f:
