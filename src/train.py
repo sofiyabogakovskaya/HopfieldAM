@@ -18,7 +18,17 @@ def update(model, x, y, batch_loss, opt_state, optimizer, dt, t1, N_classes):
     model = eqx.apply_updates(model, updates)
     return model, opt_state, loss
 
-def train(run_id, model, train_loader, val_loader, batch_loss, optimizer, opt_state, epochs, dt, t1, N_classes):
+def train(run_id, 
+          model, 
+          train_loader, 
+          val_loader, 
+          batch_loss, 
+          optimizer, 
+          opt_state, 
+          epochs, 
+          dt, 
+          t1, 
+          N_classes):
     clear_logs()
     val_losses = []
     val_accuracies = []

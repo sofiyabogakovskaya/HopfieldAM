@@ -14,33 +14,54 @@ from src.test import test
 from utils.visualization import plot_metrics, plot_energy
 from utils.integrate_trajectory import integrate_trajectory
 from utils.logger import new_run_id, log_experiment
+from utils.parse_config import parse_config
 
 
 def main():
+    # run id
     run_id = new_run_id()
+
     # argument parser for dynamic selection
+    # this setup allows you to switch models and loss functions easily by running:
+    # python main.py --model model2 --loss loss2 --epochs 20
     parser = argparse.ArgumentParser(description="Hopfield Associative Memory Training")
     parser.add_argument("--model", type=str, default="Hopfield", help="Model architecture")
     parser.add_argument("--loss", type=str, default="loss_last10", help="Loss function")
-    parser.add_argument("--epochs", type=int, default=CONFIG["epochs"], help="Number of training epochs")
-    parser.add_argument("--batch_size", type=int, default=CONFIG["batch_size"], help="Batch size")
-    parser.add_argument("--dt", type=int, default=CONFIG["dt"], help="dt")
-    parser.add_argument("--t1", type=int, default=CONFIG["t1"], help="t1")
-    parser.add_argument("--N_classes", type=int, default=CONFIG["N_classes"], help="N classes")
+    parser = parse_config(parser, CONFIG)
     args = parser.parse_args()
-
+    
+    # load the data
     train_loader, val_loader, test_loader = get_dataloader(batch_size=args.batch_size)
 
+    #TODO: N_neurons should not be passed this way if we want to use different datasets
     N_neurons = 784
     key = random.PRNGKey(19)
     model = get_model(args.model, key, N_neurons=N_neurons)
     batch_loss = get_batch_loss(args.loss)
-    
+
+    # opimizer
     optimizer = optax.adam(learning_rate=CONFIG["learning_rate"])
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
-    trained_model = train(run_id, model, train_loader, val_loader, batch_loss, optimizer, opt_state, args.epochs, args.dt, args.t1, args.N_classes)
-    test_accuracy = test(run_id, trained_model, test_loader, args.dt, args.t1, args.N_classes)
+    # training x testing x log
+    trained_model = train(run_id=run_id,
+                          model=model, 
+                          train_loader=train_loader, 
+                          val_loader=val_loader,
+                          batch_loss=batch_loss, 
+                          optimizer=optimizer, 
+                          opt_state=opt_state, 
+                          epochs=args.epochs, 
+                          dt=args.dt, 
+                          t1=args.t1, 
+                          N_classes=args.N_classes)
+    
+    test_accuracy = test(run_id=run_id, 
+                         model=trained_model, 
+                         test_lodaer=test_loader, 
+                         dt=args.dt, 
+                         t1=args.t1, 
+                         N_classes=args.N_classes)
 
     log_experiment(run_id, model, opt_state, CONFIG, {
                 "test_accuracy": test_accuracy
@@ -60,7 +81,3 @@ def main():
 if __name__ == "__main__":
     print("omg hi!!!")
     main()
-
-# This setup allows you to switch models and loss functions easily by running:
-# python main.py --model model2 --loss loss2 --epochs 20
-# python script.py --name Alice --age 25 --verbose
