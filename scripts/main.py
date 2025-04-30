@@ -74,7 +74,7 @@ def main():
         "test_accuracy": test_accuracy
         }
     
-    log_experiment(run_id, model, opt_state, CONFIG, metrics)
+    log_experiment(run_id, trained_model, opt_state, CONFIG, metrics)
     log_summary(run_id, CONFIG, metrics)
 
     plot_metrics()
