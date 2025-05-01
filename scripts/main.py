@@ -57,16 +57,16 @@ def main():
         N_classes=args.N_classes
         )
     
-    test_accuracy = test(
+    test_loss, test_accuracy = test(
         run_id=run_id, 
         model=trained_model, 
-        test_lodaer=test_loader,
+        test_loader=test_loader,
+        batch_loss=batch_loss,
         dt=args.dt, 
         t1=args.t1, 
         N_classes=args.N_classes
         )
     
-    test_loss = -1
     metrics = {
         "val_losses": val_losses,
         "val_accuracies": val_accuracies,
