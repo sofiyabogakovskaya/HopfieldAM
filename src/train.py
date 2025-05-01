@@ -50,17 +50,15 @@ def train(model,
             total_loss += loss_value
             num_batches += 1   
         val_loss = total_loss / num_batches
-        val_loss = round(float(val_loss), 5)
+        val_loss = round(float(val_loss), 4)
         val_accuracy = batch_accuracy(model, val_loader, dt, t1, N_classes)  
-        val_accuracy = round(float(val_accuracy), 5)
-
+        val_accuracy = round(float(val_accuracy), 4)
         
         print(f"Epoch {epoch+1}/{epochs} - Loss: {val_loss:.4f} - Val Accuracy: {val_accuracy:.2%}")
+        # log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
+        # log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
 
         val_losses.append(val_loss)
         val_accuracies.append(val_accuracy) 
-
-        # log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
-        # log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})
  
     return model, val_losses, val_accuracies
