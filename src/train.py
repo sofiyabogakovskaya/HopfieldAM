@@ -54,8 +54,8 @@ def train(model,
 
         print(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
 
-        val_losses.append(float(avg_loss))
-        val_accuracies.append(float(val_acc)) 
+        val_losses.append(round(float(avg_loss), 5))
+        val_accuracies.append(round(float(val_acc), 5)) 
 
         # log_message(f"Epoch {epoch+1}/{epochs} - Loss: {avg_loss:.4f} - Val Accuracy: {val_acc:.2%}")
         # log_metrics({"epoch": epoch + 1, "loss": float(avg_loss), "val_accuracy": float(val_acc)})

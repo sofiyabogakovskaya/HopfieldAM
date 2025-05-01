@@ -11,4 +11,4 @@ def test(model, test_loader, batch_loss, dt, t1, N_classes):
     test_loss = total_loss / num_batches
     test_accuracy = batch_accuracy(model, test_loader, dt, t1, N_classes)
     print(f"Test Loss: {test_loss}, Test Accuracy: {test_accuracy:.2%}")
-    return float(test_loss), float(test_accuracy)
+    return round(float(test_loss), 5), round(float(test_accuracy), 5)

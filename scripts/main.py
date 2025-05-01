@@ -41,7 +41,8 @@ def main():
     batch_loss = get_batch_loss(args.loss)
 
     # opimizer
-    optimizer = optax.adam(learning_rate=CONFIG["learning_rate"])
+    # optimizer = optax.adam(learning_rate=CONFIG["learning_rate"])
+    optimizer = optax.adam(learning_rate=args.learning_rate)
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
     # training x testing x log
@@ -75,6 +76,7 @@ def main():
         "test_accuracy": test_accuracy
         }
     
+
     log_experiment(run_id, trained_model, opt_state, config, metrics)
     log_summary(run_id, config, metrics)
 
