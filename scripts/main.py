@@ -29,6 +29,7 @@ def main():
     parser.add_argument("--loss", type=str, default="loss_last10", help="Loss function")
     parser = parse_config(parser, CONFIG)
     args = parser.parse_args()
+    config = vars(args)
     
     # load the data
     train_loader, val_loader, test_loader = get_dataloader(batch_size=args.batch_size)
@@ -74,10 +75,10 @@ def main():
         "test_accuracy": test_accuracy
         }
     
-    log_experiment(run_id, trained_model, opt_state, CONFIG, metrics)
-    log_summary(run_id, CONFIG, metrics)
+    log_experiment(run_id, trained_model, opt_state, config, metrics)
+    log_summary(run_id, config, metrics)
 
-    plot_metrics()
+    # plot_metrics()
     # or in bash python utils/visualize.py
     
     # pythontrajectory = integrate_trajectory(model, x, args.dt, args.t1, args.ts)
