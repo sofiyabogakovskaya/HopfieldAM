@@ -46,7 +46,7 @@ def main():
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
     # training x testing x log
-    trained_model, val_losses, val_accuracies = train(
+    trained_model, train_losses, val_accuracies = train(
         model=model,                                               
         train_loader=train_loader, 
         val_loader=val_loader,
@@ -70,7 +70,7 @@ def main():
         )
     
     metrics = {
-        "val_losses": val_losses,
+        "val_losses": train_losses,
         "val_accuracies": val_accuracies,
         "test_loss": test_loss, 
         "test_accuracy": test_accuracy
