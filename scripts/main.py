@@ -70,7 +70,7 @@ def main():
         )
     
     metrics = {
-        "val_losses": train_losses,
+        "train_losses": train_losses,
         "val_accuracies": val_accuracies,
         "test_loss": test_loss, 
         "test_accuracy": test_accuracy

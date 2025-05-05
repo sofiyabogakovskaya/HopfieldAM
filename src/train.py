@@ -7,7 +7,6 @@ from jax import grad, random, config, vmap, jit
 from tqdm import tqdm
 
 from config import CONFIG
-from utils.logger import log_message, log_metrics, clear_logs
 from utils.logger import log_experiment, new_run_id
 from utils.metrics import batch_accuracy
 
