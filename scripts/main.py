@@ -41,7 +41,6 @@ def main():
     batch_loss = get_batch_loss(args.loss)
 
     # opimizer
-    # optimizer = optax.adam(learning_rate=CONFIG["learning_rate"])
     optimizer = optax.adam(learning_rate=args.learning_rate)
     opt_state = optimizer.init(eqx.filter(model, eqx.is_array))
 
@@ -80,12 +79,7 @@ def main():
     log_experiment(run_id, trained_model, opt_state, config, metrics)
     log_summary(run_id, config, metrics)
 
-    # plot_metrics()
-    # or in bash python utils/visualize.py
-    
-    # pythontrajectory = integrate_trajectory(model, x, args.dt, args.t1, args.ts)
-    # energy = vmap(energy)(model.energy)(x)
-    # plot_energy(energy)
+    plot_metrics(run_id)
 
     print("finish")
 
