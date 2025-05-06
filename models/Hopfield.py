@@ -2,7 +2,7 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from jax import random
-from jax.nn import relu
+from jax.nn import relu, sigmoid
 
 class Hopfield(eqx.Module):
     W: jnp.array
@@ -13,10 +13,12 @@ class Hopfield(eqx.Module):
         self.b = jnp.zeros((N_neurons, ))
 
     def __call__(self, t, x, args):
-        r = relu(x)
+        # r = relu(x)
+        r = sigmoid(x)
         return (self.W + self.W.T) @ r / 2 - x + self.b
 
     def energy(self, x):
-        r = relu(x)
+        # r = relu(x)
+        r = sigmoid(x)
         E = (x - self.b) @ r - jnp.sum(r**2) / 2 - r @ (self.W + self.W.T) @ r / 4
         return E
