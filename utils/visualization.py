@@ -1,6 +1,13 @@
 import json
 import os
+
+import jax.numpy as jnp
+from jax import vmap
+
 import matplotlib.pyplot as plt
+
+from utils.integrate_trajectory import get_energy
+
 
 def plot_metrics(run_id, save_plot=True):
     """plots training loss and validation accuracy from the log file."""
@@ -55,7 +62,6 @@ def plot_metrics(run_id, save_plot=True):
         plt.savefig(plot_path)
         print(f"Plot saved to {plot_path}")
 
-    # Show plot
     plt.show()
     plt.close("all")
 
@@ -63,7 +69,28 @@ if __name__ == "__main__":
     plot_metrics()
 
 
-def plot_energy(E):
-    for e in E[:10]:
-        plt.legend()
-        plt.plot(e);
+def plot_energy(run_id, model, X_batch, y_batch, dt, t1, samples):    
+    X, y, ts, batch_E = get_energy(model, X_batch, y_batch, dt, t1, samples)
+    
+    # plot, coloring by digit
+    plt.figure(figsize=(10, 6))
+    colors = plt.get_cmap("tab10")  # 10 distinct colors
+
+    for digit in range(10):
+        idx = jnp.where(y == digit)[0]
+        for i in idx:
+            plt.plot(ts, batch_E[i],
+                    color=colors(digit),
+                    label=str(digit) if i == idx[0] else None,
+                    alpha=0.7)
+
+    plt.xlabel("Time")
+    plt.ylabel("Energy")
+    plt.title(f"{run_id}: Energy vs Time for first {samples} samples (t ∈ [0,{t1}])")
+    plt.legend(title="Digit", ncol=5, fontsize="small")
+    # plt.xlim(1.5, 4.0)
+    # plt.ylim(0.0, 10.0)
+    plt.ylim(bottom=min(batch_E.flatten()) * 1.1)  # show negative energies clearly
+    plt.show()
+    plt.close("all")
+        
