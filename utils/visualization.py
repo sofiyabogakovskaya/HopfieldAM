@@ -43,17 +43,18 @@ def plot_metrics(run_id, save_plot=True):
     ax1.set_ylabel("Train Loss")
     ax1.plot(epochs, train_losses, 'r-', label='Train Loss')
     ax1.tick_params(axis="y")
+    ax1.legend()
 
     # validation accuracy (right axis)
     ax2 = ax1.twinx()
     ax2.set_ylabel("Validation Accuracy (%)")
     ax2.plot(epochs, [a * 100 for a in val_accuracies], 'b-', label='Val Accuracy')
     ax2.tick_params(axis="y")
+    ax2.legend()
 
     # title and layout
-    plt.title("Training Loss and Validation Accuracy over Epochs")
+    plt.title(f"{run_id}: training loss and validation accuracy over epochs")
     fig.tight_layout()
-    plt.legend()
     plt.grid(alpha=0.4)
 
     # save plot if requested
@@ -91,8 +92,7 @@ def plot_energy(run_id, model, X_batch, y_batch, dt, t1, samples, save_plot=True
     plt.ylabel("Energy")
     plt.title(f"{run_id}: Energy vs Time for first {samples} samples (t ∈ [0,{t1}])")
     plt.legend(title="Digit", ncol=5, fontsize="small")
-    # plt.xlim(1.5, 4.0)
-    # plt.ylim(0.0, 10.0)
+    plt.grid(alpha=0.4)
     plt.ylim(bottom=min(batch_E.flatten()) * 1.1)  # show negative energies clearly
 
     if save_plot:
@@ -127,8 +127,6 @@ def plot_energy(run_id, model, X_batch, y_batch, dt, t1, samples, save_plot=True
     plt.ylabel("Energy")
     plt.title(f"{run_id}: Energy vs Time for first {samples} samples (t ∈ [0,{t1}])")
     plt.legend(title="Digit", ncol=5, fontsize="small")
-    # plt.xlim(1.5, 4.0)
-    # plt.ylim(0.0, 10.0)
     plt.ylim(bottom=min(batch_E.flatten()) * 1.1)  # show negative energies clearly
 
     if save_plot:
