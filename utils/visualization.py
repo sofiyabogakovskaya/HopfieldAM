@@ -103,3 +103,38 @@ def plot_energy(run_id, model, X_batch, y_batch, dt, t1, samples, save_plot=True
     plt.show()
     plt.close("all")
         
+
+
+def plot_energy(run_id, model, X_batch, y_batch, dt, t1, samples, save_plot=True):    
+    X, y, ts, batch_E = get_energy(model, X_batch, y_batch, dt, t1, samples)
+
+    output_dir = f"experiments/{run_id}"
+    plot_path = os.path.join(output_dir, f"energy_plot_{samples}samples.png")
+
+    # plot, coloring by digit
+    plt.figure(figsize=(10, 6))
+    colors = plt.get_cmap("tab10")  # 10 distinct colors
+
+    for digit in range(10):
+        idx = jnp.where(y == digit)[0]
+        for i in idx:
+            plt.plot(ts, batch_E[i],
+                    color=colors(digit),
+                    label=str(digit) if i == idx[0] else None,
+                    alpha=0.7)
+
+    plt.xlabel("Time")
+    plt.ylabel("Energy")
+    plt.title(f"{run_id}: Energy vs Time for first {samples} samples (t ∈ [0,{t1}])")
+    plt.legend(title="Digit", ncol=5, fontsize="small")
+    # plt.xlim(1.5, 4.0)
+    # plt.ylim(0.0, 10.0)
+    plt.ylim(bottom=min(batch_E.flatten()) * 1.1)  # show negative energies clearly
+
+    if save_plot:
+        os.makedirs(output_dir, exist_ok=True)
+        plt.savefig(plot_path)
+        print(f"Plot saved to {plot_path}")
+
+    plt.show()
+    plt.close("all")

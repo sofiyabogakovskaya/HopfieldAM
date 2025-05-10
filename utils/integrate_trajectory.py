@@ -3,6 +3,11 @@ import jax.numpy as jnp
 from jax import grad, random, config, vmap, jit
 
 def integrate_trajectory(model, x, dt, t1, ts):
+    """
+    Be careful with saveat=diffrax.SaveAt(ts=ts) in the code below
+    It returns the same shape of energy as input t
+
+    """
     x = diffrax.diffeqsolve(
         diffrax.ODETerm(model),
         diffrax.Dopri5(),
@@ -11,7 +16,7 @@ def integrate_trajectory(model, x, dt, t1, ts):
         dt0=dt,
         y0=x,
         stepsize_controller=diffrax.PIDController(rtol=1e-5, atol=1e-5),
-        # saveat=diffrax.SaveAt(ts=ts),
+        saveat=diffrax.SaveAt(ts=ts),   # Would return energy in all ts given
         args=None
     ).ys
     return x
