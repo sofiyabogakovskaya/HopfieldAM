@@ -6,6 +6,7 @@ import jax.random as random
 from jax import vmap
 
 from config import CONFIG
+from activation_map import ACTIVATION_MAP
 from models import get_model
 from losses import get_batch_loss
 from datasets.dataset_loader import get_dataloader
@@ -37,7 +38,8 @@ def main():
     #TODO: N_neurons should not be passed this way if we want to use different datasets
     N_neurons = 784
     key = random.PRNGKey(19)
-    model = get_model(args.model, key, N_neurons=N_neurons)
+    g = ACTIVATION_MAP[args.activation]
+    model = get_model(args.model, key=key, N_neurons=N_neurons, g=g)
     batch_loss = get_batch_loss(args.loss)
 
     # opimizer

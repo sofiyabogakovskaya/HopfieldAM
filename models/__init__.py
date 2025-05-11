@@ -13,4 +13,4 @@ def get_model(model_name, key, **kwargs):
 #         "Hopfield": Hopfield()
 #         # "model2": Model2(),
 #     }
-#     return models.get(na    me, Hopfield()) 
+#     return models.get(name, Hopfield()) 
