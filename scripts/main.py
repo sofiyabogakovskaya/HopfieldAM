@@ -33,7 +33,7 @@ def main():
     config = vars(args)
     
     # load the data
-    train_loader, val_loader, test_loader = get_dataloader(batch_size=args.batch_size)
+    train_loader, val_loader, test_loader = get_dataloader(args.dataset_name, batch_size=args.batch_size)
 
     #TODO: N_neurons should not be passed this way if we want to use different datasets
     N_neurons = 784

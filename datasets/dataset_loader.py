@@ -12,10 +12,13 @@ def get_dataloader(dataset_name="mnist", batch_size=32, val_ratio=0.1, test_rati
     X = X.reshape(X.shape[0], -1)
     X = X.astype(jnp.float32) / 255.0
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_ratio, random_state=random_seed, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=test_ratio, random_state=random_seed, stratify=y
+        )
 
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=val_ratio/(1 - test_ratio), 
-                                                       random_state=random_seed, stratify=y_train)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_train, y_train, test_size=val_ratio/(1 - test_ratio), random_state=random_seed, stratify=y_train
+        )
 
     # function to yield batches
     def dataloader(X, y, batch_size):

@@ -24,6 +24,7 @@ def log_experiment(run_id, model, opt_state, config: dict, metrics: dict):
 
 
 def log_summary(run_id, config: dict, metrics: dict, log_path="experiments/results.log"):
+    dataset_name = config.get("dataset_name", 0)
     activation = config.get("activation", 0)
     epochs = config.get("epochs", 0)
     batch_size = config.get("batch_size", 0)
@@ -34,9 +35,10 @@ def log_summary(run_id, config: dict, metrics: dict, log_path="experiments/resul
     loss = metrics.get("test_loss", 0)
     acc = metrics.get("test_accuracy", 0) * 100  
 
-    line1 = f"{run_id} | loss: {loss:.4f} | acc: {acc:.1f}% | activation: {activation} | epochs: {epochs} | "
-    line2 = f"batch_size: {batch_size} | lr: {lr} | dt: {dt} | t1: {t1}\n"
-    summary_line = line1 + line2
+    line1 = f"{run_id} | dataset_name: {dataset_name} | activation: {activation} | "
+    line2 = f"epochs: {epochs} | batch_size: {batch_size} | lr: {lr} | dt: {dt} | t1: {t1} | "
+    line3 = f"loss: {loss:.4f} | acc: {acc:.1f}%\n"
+    summary_line = line1 + line2 + line3
  
     with open(log_path, "a") as f:
         f.write(summary_line)
