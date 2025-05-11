@@ -10,6 +10,7 @@ from activation_map import ACTIVATION_MAP
 from models import get_model
 from losses import get_batch_loss
 from datasets.dataset_loader import get_dataloader
+from datasets.get_dimension import get_dimension
 from src.train import train
 from src.test import test
 from utils.visualization import plot_metrics, plot_energy
@@ -36,7 +37,7 @@ def main():
     train_loader, val_loader, test_loader = get_dataloader(args.dataset_name, batch_size=args.batch_size)
 
     #TODO: N_neurons should not be passed this way if we want to use different datasets
-    N_neurons = 784
+    N_neurons = get_dimension(args.dataset_name)
     key = random.PRNGKey(19)
     g = ACTIVATION_MAP[args.activation]
     model = get_model(args.model, key=key, N_neurons=N_neurons, g=g)
