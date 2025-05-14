@@ -2,7 +2,7 @@ import jax.numpy as jnp
 import equinox as eqx
 
 from jax import random
-from jax.nn import relu, sigmoid
+from jax.nn import relu, sigmoid, gelu, softplus, silu
 from typing import Callable
 
 class Hopfield(eqx.Module):
