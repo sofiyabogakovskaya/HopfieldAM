@@ -5,6 +5,8 @@ from jax import random
 from jax.nn import relu, sigmoid, gelu, softplus, silu
 from typing import Callable
 
+import numpy as np
+
 class Hopfield(eqx.Module):
     W: jnp.array
     b: jnp.array
@@ -23,3 +25,4 @@ class Hopfield(eqx.Module):
         g = self.g(x)
         E = (x - self.b) @ g - jnp.sum(g**2) / 2 - g @ (self.W + self.W.T) @ g / 4
         return E
+    

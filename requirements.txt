@@ -8,3 +8,7 @@ tqdm
 scikit-learn
 numpy
 matplotlib
+
+pandas
+rootutils
+tensorflow-datasets
