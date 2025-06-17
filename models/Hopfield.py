@@ -3,6 +3,7 @@ import equinox as eqx
 
 from jax import random
 from jax.nn import relu, sigmoid, gelu, softplus, tanh
+from jax.scipy.special import spence  # note: spence(x) = Li₂(1 - x)
 from typing import Callable
 
 import numpy as np
@@ -29,9 +30,9 @@ class Hopfield(eqx.Module):
             return jnp.sum(softplus(x))
         elif self.g is tanh:
             return jnp.sum(jnp.log(jnp.cosh(x)))
+        elif self.g is softplus:
+            return x * jnp.log1p(jnp.exp(x)) + spence(1 + jnp.exp(x)) + + (jnp.pi**2) / 12
         # elif self.g is gelu:
-        #     
-        # elif self.g is softplus:
         #     
         else:
             raise NotImplementedError(f"lagrangian not implemented for activation {self.g}")
