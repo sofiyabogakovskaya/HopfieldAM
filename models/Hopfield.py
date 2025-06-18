@@ -31,7 +31,7 @@ class Hopfield(eqx.Module):
         elif self.g is tanh:
             return jnp.sum(jnp.log(jnp.cosh(x)))
         elif self.g is softplus:
-            return x * jnp.log1p(jnp.exp(x)) + spence(1 + jnp.exp(x)) + + (jnp.pi**2) / 12
+            return - jnp.sum(spence(1 + jnp.exp(x)))
         # elif self.g is gelu:
         #     
         else:
