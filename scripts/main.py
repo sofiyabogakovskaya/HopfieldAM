@@ -5,7 +5,7 @@ import argparse
 import jax.random as random
 from jax import vmap
 
-from config import CONFIG
+from utils.config import CONFIG
 from activation_map import ACTIVATION_MAP
 from models import get_model
 from losses import get_batch_loss

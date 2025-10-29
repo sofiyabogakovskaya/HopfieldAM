@@ -5,7 +5,7 @@ import glob
 import jax.random as random
 import equinox as eqx
 
-from activation_map import ACTIVATION_MAP
+from utils.activation_map import ACTIVATION_MAP
 from models import get_model
 from datasets.get_dimension import get_dimension
 
