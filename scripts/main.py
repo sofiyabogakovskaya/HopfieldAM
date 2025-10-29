@@ -6,7 +6,7 @@ import jax.random as random
 from jax import vmap
 
 from utils.config import CONFIG
-from activation_map import ACTIVATION_MAP
+from utils.activation_map import ACTIVATION_MAP
 from models import get_model
 from losses import get_batch_loss
 from datasets.dataset_loader import get_dataloader
@@ -77,16 +77,13 @@ def main():
         "test_loss": test_loss, 
         "test_accuracy": test_accuracy
         }
-    
 
     log_experiment(run_id, trained_model, opt_state, config, metrics)
     log_summary(run_id, config, metrics)
-
     plot_metrics(run_id)
 
     print("finish")
 
 
 if __name__ == "__main__":
-    print("omg hi!!!")
     main()

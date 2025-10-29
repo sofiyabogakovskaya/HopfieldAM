@@ -1,1 +1,1 @@
-python -m scripts.inference 
+python -m scripts.inference

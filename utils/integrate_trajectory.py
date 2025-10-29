@@ -21,7 +21,6 @@ def integrate_trajectory(model, x, dt, t1, ts):
     ).ys
     return x
 
-
 def get_energy(model, X_batch, y_batch, dt, t1, samples):
     N_steps = int(t1 / dt)
     ts = jnp.linspace(0.0, t1, N_steps + 1)
