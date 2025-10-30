@@ -7,7 +7,7 @@ from jax import vmap
 
 from utils.config import CONFIG
 from utils.activation_map import ACTIVATION_MAP
-from models import get_model
+from models import get_model    
 from losses import get_batch_loss
 from datasets.dataset_loader import get_dataloader
 from datasets.get_dimension import get_dimension
