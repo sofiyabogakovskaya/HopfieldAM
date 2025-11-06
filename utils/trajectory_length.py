@@ -9,9 +9,5 @@ def trajectory_length(x):
 def trajectory_direction(x):
     x_0 = x[0]
     x_T = x[-1]
-    dist_vec = jnp.linalg.norm(x_T - x_0)
-    dist = jnp.sum(dist_vec)
+    dist = jnp.linalg.norm(x_T - x_0)
     return dist
-
-def how_straight(traj_length, traj_dir):
-    return traj_length - traj_dir

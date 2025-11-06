@@ -3,7 +3,7 @@ import jax.numpy as jnp
 
 import tensorflow_datasets as tfds
 
-def create_custom_batch(key: random.KeyArray,
+def create_custom_batch(key,
                         numbers: list, 
                         each_number_samples: int, 
                         dataset_name='mnist', 
