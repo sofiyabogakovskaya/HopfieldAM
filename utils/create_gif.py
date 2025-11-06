@@ -8,6 +8,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
+from typing import Literal, Optional
+Method = Literal["minmax", "zscore"]
+
 
 @jit
 def _jax_min_max(x: jnp.ndarray) -> Tuple[jnp.ndarray, jnp.ndarray]:
@@ -15,11 +18,37 @@ def _jax_min_max(x: jnp.ndarray) -> Tuple[jnp.ndarray, jnp.ndarray]:
     return jnp.min(x), jnp.max(x)
 
 
+def normalize_per_step(X, method: Method = "minmax", eps: float = 1e-8):
+    """
+    X: jax array of shape (T, D)
+    method: 'minmax' or 'zscore'
+    returns jax array of same shape and dtype (float)
+    """
+    X = jnp.asarray(X, dtype=jnp.float32)
+    if method == "minmax":
+        mins = jnp.min(X, axis=1, keepdims=True)
+        maxs = jnp.max(X, axis=1, keepdims=True)
+        denom = maxs - mins
+        # avoid div by zero for constant frames
+        denom = jnp.where(denom < eps, 1.0, denom)
+        Xn = (X - mins) / denom
+        return Xn
+    elif method == "zscore":
+        mu = jnp.mean(X, axis=1, keepdims=True)
+        sigma = jnp.std(X, axis=1, keepdims=True)
+        sigma = jnp.where(sigma < eps, 1.0, sigma)
+        Xn = (X - mu) / sigma
+        return Xn
+    else:
+        raise ValueError(f"Unknown method: {method}")
+
+
 def create_gif(
     X,
     out_path: str = "mnist_evolution.gif",
     fps: int = 20,
     cmap: str = "gray",
+    save_colors = True,
     sample_stride: Optional[int] = None,
     vmin: Optional[float] = None,
     vmax: Optional[float] = None,
@@ -72,6 +101,13 @@ def create_gif(
     side = int(math.isqrt(D))
     if side * side != D:
         raise ValueError(f"Expected D to be a perfect square (like 784), got D={D}")
+    
+    if save_colors == True:
+        x_0 = X_np[0]
+        x_0_norm = jnp.linalg.norm(x_0)
+        X_np_norm = normalize_per_step(jnp.array(X_np), method="minmax")   # each frame scaled to [0,1]
+        X_np_scaled = X_np_norm * x_0_norm
+        X_np = X_np_scaled
 
     frames = X_np.reshape(T, side, side)
 
