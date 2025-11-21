@@ -1,7 +1,14 @@
 import jax.numpy as jnp
+from jax import vmap, jvp, jit
+
+from typing import Callable, Tuple, Dict
 
 
-def derivative_based_curvature(Y: jnp.ndarray, dt: float, speed_eps: float = 1e-10) -> jnp.ndarray:
+
+def derivative_based_curvature(Y: jnp.ndarray, 
+                               dt: float, 
+                               speed_eps: float = 1e-10
+                               ) -> jnp.ndarray:
     '''
     Finite-difference curvature estimator on Y (T, d).
     Returns kappa array of length T (NaN at first and last index).
@@ -23,32 +30,45 @@ def derivative_based_curvature(Y: jnp.ndarray, dt: float, speed_eps: float = 1e-
     out = out.at[1:-1].set(kappa_core)
     return out
 
-def triangle_based_curvature(Y: jnp.ndarray, length_eps: float = 1e-12) -> jnp.ndarray:
-    '''
-    three-point curvature estimate using triangle area formula.
-    For each triple (i-1, i, i+1) compute curvature and place at index i.
-    Returns length-T array with NaN at first & last indices.
-    '''
-    T = Y.shape[0]
-    
-    p0 = Y[:-2]   
-    p1 = Y[1:-1]
-    p2 = Y[2:]
-    u = p1 - p0
-    v = p2 - p0
-    u2 = jnp.sum(u * u, axis=1)
-    v2 = jnp.sum(v * v, axis=1)
-    uv = jnp.sum(u * v, axis=1)
-    # squared area * 4 = 4 * (0.5*A)^2 * 4 = (u2*v2 - uv^2)
-    inside = jnp.maximum(u2 * v2 - uv * uv, 0.0)
-    area = 0.5 * jnp.sqrt(inside)  # area of triangle
-    l1 = jnp.sqrt(jnp.sum((p1 - p0) ** 2, axis=1))
-    l2 = jnp.sqrt(jnp.sum((p2 - p1) ** 2, axis=1))
-    l3 = jnp.sqrt(jnp.sum((p2 - p0) ** 2, axis=1))
-    denom = l1 * l2 * l3
-    denom = jnp.where(denom <= length_eps, jnp.nan, denom)
-    kappa_core = 4.0 * area / denom
-    out = jnp.full((T,), jnp.nan)
-    out = out.at[1:-1].set(kappa_core)
-    return out
 
+def derivative_based_curvature_(model: Callable,
+                                X_traj: jnp.ndarray,
+                                dt: float,
+                                t1: float
+                                ) -> jnp.ndarray:
+    
+    N_steps = int(t1 / dt)
+    ts = jnp.linspace(0.0, t1, N_steps + 1)
+    ts = jnp.asarray(ts)
+
+    def model_wrapped(ti, xi):
+        return model(ti, xi, None)
+
+    V = vmap(model_wrapped)(ts, X_traj) # (T,N)
+
+    # JVP acceleration (we use the chai rule to calculate the accelaration)
+    def acceleration(ti, xi, vi):
+        z = jnp.concatenate([xi, jnp.array([ti])])
+        dz = jnp.concatenate([vi, jnp.array([1.0])])
+        def F(zflat):
+            x_ = zflat[:-1]
+            t_ = zflat[-1]
+            return model_wrapped(t_, x_)
+        _, a = jvp(F, (z,), (dz,))
+        return a
+
+    acceleration_jit = jit(acceleration)
+
+    A = vmap(acceleration_jit)(ts, X_traj, V)   # (T, N)
+
+    # curvature: kappa = || a_perp || / ||v||^2
+    V_square = jnp.sum(V * V, axis=1)   # (T,)
+    dot_VA = jnp.sum(V * A, axis=1)   # (T,)
+
+    projection = (dot_VA / V_square)[:, None] * V   # (T, N)
+    A_perp = A - projection
+    A_perp_norm = jnp.linalg.norm(A_perp, axis=1)
+
+    kappa = A_perp_norm / V_square
+
+    return kappa
