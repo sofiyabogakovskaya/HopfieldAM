@@ -3,3 +3,6 @@ logs/
 experiments*/
 notebooks/archive/
 notebooks/DAM.ipynb
+notebooks/checkpoints/
+notebooks/dense_Hopfield_Networks.ipynb
+*.pkl
