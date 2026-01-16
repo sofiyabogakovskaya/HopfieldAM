@@ -1,0 +1,13 @@
+{
+  "model": "Hopfield",
+  "loss": "loss_last10",
+  "dataset_name": "mnist",
+  "activation": "tanh",
+  "epochs": 20,
+  "batch_size": 128,
+  "learning_rate": 0.0001,
+  "dt": 0.01,
+  "t1": 15.0,
+  "N_classes": 10,
+  "num_plot_samples": 10
+}
